@@ -1,35 +1,8 @@
-version: 2.1
 orbs:
-  node: circleci/node@5.2.0
+  node: circleci/node@4.7.0
   heroku: circleci/heroku@1.2.6
-
 jobs:
-  install-node-example:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - node/install:
-          install-yarn: true
-          node-version: '12.14.0'
-      - run: node --version
-  build_and_test:
-    executor: node/default
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          command: npm test
-          name: Run tests
-      - run:
-          command: npm start
-          name: Build app
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
-
+  # ...previous job(s)...
   deploy: # this can be any name you choose
     executor: heroku/default
     steps:
@@ -37,14 +10,3 @@ jobs:
           at: ~/project
       - heroku/deploy-via-git:
           force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
-
-workflows:
-  test_my_app:
-    jobs:
-      - build_and_test
-      - deploy:
-          requires:
-            - build_and_test # only deploy if the build_and_test job has completed
-          filters:
-            branches:
-              only: main # only deploy when on main
