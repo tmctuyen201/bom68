@@ -1,9 +1,18 @@
 version: 2.1
 orbs:
-  node: circleci/node@12.14.0
+  node: circleci/node@5.5.0
   heroku: circleci/heroku@1.2.6
 
 jobs:
+install-node-example:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '12.14.0'
+      - run: node --version
   build_and_test:
     executor: node/default
     steps:
