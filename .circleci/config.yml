@@ -1,11 +1,12 @@
-version: 2.1
-workflows:
-  testing:
-    jobs:
-      - runner-test
+orbs:
+  node: circleci/node@4.7.0
+  heroku: circleci/heroku@1.2.6
 jobs:
-  runner-test:
-    machine: true
-    resource_class: tmctuyen201/bom68
+  # ...previous job(s)...
+  deploy: # this can be any name you choose
+    executor: heroku/default
     steps:
-      - run: echo "Hi I'm on Runners!"
+      - attach_workspace:
+          at: ~/bom68
+      - heroku/deploy-via-git:
+          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
